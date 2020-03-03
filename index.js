@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 app.use(cors())
+app.use(express.static('build'))
 app.use(bodyParser.json())
 
 let notes = [
@@ -15,11 +16,11 @@ app.get('/', (req,res) => {
     res.send('<h1>Overskrift</h1>')
 })
 
-app.get('/notes', (req,res) => {
+app.get('/api/notes', (req,res) => {
     res.json(notes)
 })
 
-app.get('/notes/:id', (request,response) => {
+app.get('/api/notes/:id', (request,response) => {
     const id = Number(request.params.id)
     const note = notes.find(note => note.id === id)
     if(note){
@@ -34,7 +35,7 @@ const generateId = () => {
         : 0
     return maxId + 1
 }
-app.post('/notes', (request, response) => {
+app.post('/api/notes', (request, response) => {
     const body = request.body
     if(!body.content){
         return response.status(400).json({
@@ -51,7 +52,7 @@ app.post('/notes', (request, response) => {
     response.json(note);
 })
 
-app.delete('/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
     notes = notes.filter(note => note.id !== id)
     response.status(204).end()
